@@ -7,9 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var map_scale = function() {
         var min = [-1088, 130];
         var max = [-135, 1944];
-
-        var pixels = []
-
         return {
             pixel: function(x, y) {
 
@@ -20,7 +17,14 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }();
 
-
+    var IconFactory = L.Icon.extend({
+        options: {
+            iconUrl: 'static/img/priest_marker_small.png',
+            iconSize:     [35, 41],
+            iconAnchor:   [17.5, 40],
+            popupAnchor:  [0, -41]
+        }
+    });
 
 
     var map = L.map('mapid', { crs: L.CRS.Simple, minZoom: -5 , center: [0.0, 0.0]});
@@ -43,23 +47,54 @@ document.addEventListener('DOMContentLoaded', function() {
 
     map.setView(map_scale.relative(0.5, 0.5), -1);
 
-    var greenIcon = L.icon({
-        iconUrl: 'static/img/priest_marker_small.png',
-        // shadowUrl: 'leaf-shadow.png',
-
-        iconSize:     [35, 41], // size of the icon
-        // shadowSize:   [50, 64], // size of the shadow
-        iconAnchor:   [17.5, 40], // point of the icon which will correspond to marker's location
-        // shadowAnchor: [4, 62],  // the same for the shadow
-        popupAnchor:  [0, -41] // point from which the popup should open relative to the iconAnchor
-    });
-
-    L.marker([-895.5, 1108.5], {icon: greenIcon}).addTo(map).bindPopup("Teacher of Yog");
-    L.marker([-496.5, 1638], {icon: greenIcon}).addTo(map).bindPopup("Teacher of Set");
-    L.marker([-357, 1351.5], {icon: greenIcon}).addTo(map).bindPopup("Teacher of Mitra");
-
     map.on('click', function(e) {
         console.log(e.latlng);
     });
+
+
+
+
+    var jsonLoad = function(path, success, error) {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    if (success) {
+                        success(JSON.parse(xhr.responseText));
+                    }
+                } else {
+                    if (error) {
+                        error(xhr);
+                    }
+                }
+            }
+        };
+        xhr.open("GET", path, true);
+        xhr.send();
+    };
+
+
+    var defaultIcon = new IconFactory({iconUrl: 'static/img/default_marker_small.png'});
+    var priestIcon = new IconFactory({iconUrl: 'static/img/priest_marker_small.png'});
+
+
+   jsonLoad('static/js/data.json', function(data) {
+       for(var i = 0; i < data.length; i++) {
+           var set = data[i];
+
+           var iconType = defaultIcon;
+           switch(set.type.toLowerCase()) {
+               case "teacher":
+                   iconType = priestIcon;
+                   break;
+               default:
+                   break;
+           }
+
+           L.marker(set.position, {icon: iconType}).addTo(map).bindPopup(set.description);
+
+       }
+   });
+
 
 });

@@ -1,0 +1,22 @@
+[
+  {
+    "type": "teacher",
+    "description": "Teacher of Set",
+    "position": [-496.5, 1638]
+  },
+  {
+    "type": "teacher",
+    "description": "Teacher of Yog",
+    "position": [-895.5, 1108.5]
+  },
+  {
+    "type": "teacher",
+    "description": "Teacher of Mitra",
+    "position": [-357, 1351.5]
+  },
+  {
+    "type": "broken value",
+    "description": "A generic broken value",
+    "position": [-400, 250]
+  }
+]
