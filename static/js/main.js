@@ -3,7 +3,6 @@
 
 
 document.addEventListener('DOMContentLoaded', function() {
-
     var map_scale = function() {
         var min = [-1088, 130];
         var max = [-135, 1944];
@@ -25,6 +24,32 @@ document.addEventListener('DOMContentLoaded', function() {
             popupAnchor:  [0, -41]
         }
     });
+
+    /**
+     * Translates layer names to real names
+     * @param name - Name of the layer
+     * @returns {*} - Returns the english name of the layer, or the layer name if not found
+     */
+    var translator = function(name) {
+        switch(name) {
+            case "default":
+                return "Default";
+            case "enemy":
+                return "Enemies";
+            case "resource":
+                return "Resources";
+            case "friendly":
+                return "Friendly NPCs";
+            case "cave":
+                return "Caves";
+            case "camp":
+                return "Encampments";
+            default:
+                return name;
+        }
+    };
+
+
 
 
     var map = L.map('mapid', { crs: L.CRS.Simple, minZoom: -1, maxZoom: 1, center: [0.0, 0.0]});
@@ -73,44 +98,93 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
 
+    // entire chunk for markers and their logic
+
     var defaultIcon = new IconFactory({iconUrl: 'static/img/default_marker.png'});
     var priestIcon = new IconFactory({iconUrl: 'static/img/priest_marker.png'});
     var dragonIcon = new IconFactory({iconUrl: 'static/img/dragon_marker.png'});
     var undeadIcon = new IconFactory({iconUrl: 'static/img/undead_marker.png'});
     var campIcon = new IconFactory({iconUrl: 'static/img/camp_marker.png'});
 
+    var layers = {
+        'default':  L.layerGroup(),
+        'enemy':  L.layerGroup(),
+        'camp':  L.layerGroup(),
+        'resource':  L.layerGroup(),
+        'friendly':  L.layerGroup(),
+        'cave':  L.layerGroup()
+    };
+
+    var selector = document.getElementById("layerSelector");
+
+    var keys = Object.keys(layers);
+
+
+    var clickCallback =  function(key) {
+        var enabled = true;
+
+        return function(e) {
+            e.preventDefault();
+            if(enabled) {
+                layers[key].remove();
+            } else {
+                layers[key].addTo(map);
+            }
+            enabled = !enabled;
+        }
+    };
+
+    for(var i = 0; i < keys.length; i++){
+        var key = keys[i];
+        layers[key].addTo(map);
+        if(key == 'default') {
+            continue;
+        }
+        var node = document.createElement('a');
+        node.setAttribute('href', '');
+        node.setAttribute('class', 'mdl-navigation__link');
+        node.addEventListener('click', clickCallback(key));
+        node.innerText = translator(key);
+        selector.appendChild(node);
+    }
+
+
+
    jsonLoad('static/js/data.json', function(data) {
        for(var i = 0; i < data.length; i++) {
            var set = data[i];
 
            var iconType = defaultIcon;
+           var selectLayer = "default";
            switch(set.type.toLowerCase()) {
                case "teacher":
                    iconType = priestIcon;
+                   selectLayer = "friendly";
                    break;
                case "dragon":
                    iconType = dragonIcon;
+                   selectLayer = "enemy";
                    break;
                case "undead":
                    iconType = undeadIcon;
+                   selectLayer = "enemy";
                    break;
                case "camp":
                    iconType = campIcon;
+                   selectLayer = "camp";
                    break;
                default:
                    break;
            }
 
-           var marker = L.marker(set.position, {icon: iconType}).addTo(map);
+           var marker = L.marker(set.position, {icon: iconType}).addTo(layers[selectLayer]);
            if(set.description) {
                marker.bindPopup(set.description);
            }
-
        }
    });
 
     map.setView(map_scale.relative(0.5, 0.5), 0);
-
 
 
 });
