@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var IconFactory = L.Icon.extend({
         options: {
-            iconUrl: 'static/img/priest_marker_small.png',
+            iconUrl: 'static/img/default_marker.png',
             iconSize:     [35, 41],
             iconAnchor:   [17.5, 40],
             popupAnchor:  [0, -41]
@@ -73,9 +73,10 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
 
-    var defaultIcon = new IconFactory({iconUrl: 'static/img/default_marker_small.png'});
-    var priestIcon = new IconFactory({iconUrl: 'static/img/priest_marker_small.png'});
-
+    var defaultIcon = new IconFactory({iconUrl: 'static/img/default_marker.png'});
+    var priestIcon = new IconFactory({iconUrl: 'static/img/priest_marker.png'});
+    var dragonIcon = new IconFactory({iconUrl: 'static/img/dragon_marker.png'});
+    var undeadIcon = new IconFactory({iconUrl: 'static/img/undead_marker.png'});
 
    jsonLoad('static/js/data.json', function(data) {
        for(var i = 0; i < data.length; i++) {
@@ -86,11 +87,20 @@ document.addEventListener('DOMContentLoaded', function() {
                case "teacher":
                    iconType = priestIcon;
                    break;
+               case "dragon":
+                   iconType = dragonIcon;
+                   break;
+               case "undead":
+                   iconType = undeadIcon;
+                   break;
                default:
                    break;
            }
 
-           L.marker(set.position, {icon: iconType}).addTo(map).bindPopup(set.description);
+           var marker = L.marker(set.position, {icon: iconType}).addTo(map);
+           if(set.description) {
+               marker.bindPopup(set.description);
+           }
 
        }
    });

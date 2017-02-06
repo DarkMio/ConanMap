@@ -18,5 +18,14 @@
     "type": "broken value",
     "description": "A generic broken value",
     "position": [-400, 250]
+  },
+  {
+    "type": "dragon",
+    "position": [-290, 862]
+  },
+  {
+    "type": "undead",
+    "description": "Small undead cave",
+    "position": [-290, 600]
   }
 ]
