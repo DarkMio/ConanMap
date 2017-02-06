@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 
-    var map = L.map('mapid', { crs: L.CRS.Simple, minZoom: -5 , center: [0.0, 0.0]});
+    var map = L.map('mapid', { crs: L.CRS.Simple, minZoom: -1, maxZoom: 1, center: [0.0, 0.0]});
 
     // the map is 3627 x 1920 big - this means:
     // 1 px is 0.3 map units
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     L.tileLayer('static/tiles/{z}_{x}_{y}.png', {
         // attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
         noWrap: true,
-        minZoom: -5,
+        minZoom: -1,
         maxZoom: 1,
         zoomOffset: 6,
         bounds: [[-135, 130], [-1088, 1944]]
