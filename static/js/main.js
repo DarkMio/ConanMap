@@ -7,8 +7,16 @@ document.addEventListener('DOMContentLoaded', function() {
     var map_scale = function() {
         var min = [-1088, 130];
         var max = [-135, 1944];
-        return function(x, y) {
-            return [min[0] + (max[0] - min[0]) * (1 - x), min[1] + (max[1] - min[1]) * y];
+
+        var pixels = []
+
+        return {
+            pixel: function(x, y) {
+
+            },
+            relative: function(x, y) {
+                return [min[0] + (max[0] - min[0]) * (1 - x), min[1] + (max[1] - min[1]) * y];
+            }
         };
     }();
 
@@ -28,12 +36,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
         noWrap: true,
         minZoom: -5,
-        maxZoom: 7,
+        maxZoom: 1,
         zoomOffset: 6,
         bounds: [[-135, 130], [-1088, 1944]]
     }).addTo(map);
 
-    map.setView(map_scale(0.5, 0.5), -1);
+    map.setView(map_scale.relative(0.5, 0.5), -1);
 
     var greenIcon = L.icon({
         iconUrl: 'static/img/priest_marker_small.png',
@@ -46,19 +54,12 @@ document.addEventListener('DOMContentLoaded', function() {
         popupAnchor:  [0, -41] // point from which the popup should open relative to the iconAnchor
     });
 
-    L.marker([130.25, 655], {icon: greenIcon}).addTo(map).bindPopup("Teacher of Yog");
-    L.marker([466.5, 767.5], {icon: greenIcon}).addTo(map).bindPopup("Teacher of Set");
-    L.marker([403, 988], {icon: greenIcon}).addTo(map).bindPopup("Teacher of Mitra");
-
-
-    L.marker([0, 0]).addTo(map);
+    L.marker([-895.5, 1108.5], {icon: greenIcon}).addTo(map).bindPopup("Teacher of Yog");
+    L.marker([-496.5, 1638], {icon: greenIcon}).addTo(map).bindPopup("Teacher of Set");
+    L.marker([-357, 1351.5], {icon: greenIcon}).addTo(map).bindPopup("Teacher of Mitra");
 
     map.on('click', function(e) {
         console.log(e.latlng);
     });
-
-    for(var i = 0; i < 1; i += 0.1) {
-        L.marker(map_scale(i, i)).addTo(map);
-    }
 
 });
