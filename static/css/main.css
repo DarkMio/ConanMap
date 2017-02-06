@@ -1,0 +1,8 @@
+body {
+    height: 800px;
+    width: 1200px;
+}
+
+#mapid{
+    height: 100%; width: 100%
+}
