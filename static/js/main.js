@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var priestIcon = new IconFactory({iconUrl: 'static/img/priest_marker.png'});
     var dragonIcon = new IconFactory({iconUrl: 'static/img/dragon_marker.png'});
     var undeadIcon = new IconFactory({iconUrl: 'static/img/undead_marker.png'});
+    var campIcon = new IconFactory({iconUrl: 'static/img/camp_marker.png'});
 
    jsonLoad('static/js/data.json', function(data) {
        for(var i = 0; i < data.length; i++) {
@@ -92,6 +93,9 @@ document.addEventListener('DOMContentLoaded', function() {
                    break;
                case "undead":
                    iconType = undeadIcon;
+                   break;
+               case "camp":
+                   iconType = campIcon;
                    break;
                default:
                    break;

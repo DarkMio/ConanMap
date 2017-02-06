@@ -27,5 +27,15 @@
     "type": "undead",
     "description": "Small undead cave",
     "position": [-290, 600]
+  },
+  {
+    "type": "camp",
+    "description": "The big slave camp",
+    "position": [-283, 988]
+  },
+  {
+    "type": "camp",
+    "description": "The small initial camp",
+    "position": [-865, 1364.5]
   }
 ]
