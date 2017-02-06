@@ -10,6 +10,11 @@ document.addEventListener('DOMContentLoaded', function() {
             pixel: function(x, y) {
 
             },
+            toRelative: function(x, y) {
+
+
+                return [ 1 + ((min[0] - x) / (max[0] - min[0])), -((min[1] - y) / (max[1] - min[1]))];
+            },
             relative: function(x, y) {
                 return [min[0] + (max[0] - min[0]) * (1 - x), min[1] + (max[1] - min[1]) * y];
             }
@@ -52,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-    var map = L.map('mapid', { crs: L.CRS.Simple, minZoom: -1, maxZoom: 1, center: [0.0, 0.0]});
+    var map = L.map('map', { crs: L.CRS.Simple, minZoom: -1, maxZoom: 1, center: [0.0, 0.0]});
 
     // the map is 3627 x 1920 big - this means:
     // 1 px is 0.3 map units
@@ -71,9 +76,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }).addTo(map);
 
 
-    map.on('click', function(e) {
-        console.log(e.latlng);
-    });
 
 
 
@@ -112,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'camp':  L.layerGroup(),
         'resource':  L.layerGroup(),
         'friendly':  L.layerGroup(),
+
         'cave':  L.layerGroup()
     };
 
@@ -186,5 +189,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
     map.setView(map_scale.relative(0.5, 0.5), 0);
 
+    map.on('click', function(e) {
+        console.log(e.latlng);
+    });
+
+
+
+    var dataPanel = document.getElementById('data_panel');
+    dataPanel.addEventListener('click', function() {
+        var isOpen = dataPanel.classList.contains('slide-in');
+        dataPanel.setAttribute('class', isOpen ? 'click slide-out' : 'click slide-in');
+    });
+
+    var mouse_debug = document.getElementById('mouse_info');
+    var tile_selector = document.getElementById('tile_info');
+    map.on('mousemove', function(e) {
+        var ll = e.latlng;
+        mouse_debug.innerText = "mouse=[x=" + ll['lat'].toFixed(1) + ", y=" + ll['lng'].toFixed(1) + "] \n";
+        var x = map_scale.toRelative(ll['lat'], ll['lng']);
+        var clamp = function(_) { return Math.min(0.999, Math.max(0.0001, _))};
+        x = [clamp(x[0]), clamp(x[1])];
+        mouse_debug.innerText += "rel=[x=" + x[0].toFixed(2) + ", y=" + x[1].toFixed(2) + ']';
+        tile_selector.innerText = String.fromCharCode(65 + parseInt(26 * x[1])) + (parseInt(14 * x[0]) + 1);
+
+    });
 
 });
